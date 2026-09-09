@@ -1,0 +1,55 @@
+.thread {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 20px;
+  border-bottom: 1px solid var(--line);
+  flex-shrink: 0;
+  background: var(--surface);
+}
+
+.phone {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--ink);
+}
+
+.count {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--ink-4);
+}
+
+.messages {
+  flex: 1;
+  overflow-y: auto;
+  padding: 12px 0 20px;
+  display: flex;
+  flex-direction: column;
+}
+
+.error {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 32px 20px;
+  font-size: 13px;
+  color: var(--red);
+}
+
+.emptyThread {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 32px 20px;
+  font-size: 13px;
+  color: var(--ink-4);
+}

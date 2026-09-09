@@ -1,0 +1,23 @@
+.separator {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 0 8px;
+}
+
+.separator::before,
+.separator::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--line);
+}
+
+.label {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--ink-4);
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+  text-transform: uppercase;
+}

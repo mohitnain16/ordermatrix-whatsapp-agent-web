@@ -1,0 +1,32 @@
+.badge {
+  display: inline-flex;
+  align-items: center;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.03em;
+  padding: 2px 7px;
+  border-radius: 9999px;
+  white-space: nowrap;
+}
+
+.neutral { background: var(--surface-3); color: var(--ink-3); }
+.green   { background: var(--green-soft); color: var(--green); }
+.amber   { background: var(--amber-soft); color: var(--amber); }
+.red     { background: var(--red-soft); color: var(--red); }
+.blue    { background: var(--blue-soft); color: var(--blue); }
+.accent  { background: var(--accent-soft); color: var(--accent-deep); }
+
+.count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 4px;
+  background: var(--accent);
+  color: #fff;
+  font-size: 10px;
+  font-weight: 600;
+  border-radius: 9999px;
+  font-family: var(--font-mono);
+}

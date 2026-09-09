@@ -1,0 +1,33 @@
+.page {
+  padding: 28px 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.header {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.title {
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.sub {
+  font-size: 13px;
+  color: var(--ink-3);
+}
+
+.placeholder {
+  background: var(--surface);
+  border: 1px dashed var(--line-2);
+  border-radius: var(--radius-lg);
+  padding: 48px;
+  text-align: center;
+  color: var(--ink-4);
+  font-size: 13px;
+}

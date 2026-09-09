@@ -1,0 +1,48 @@
+.splitPane {
+  display: grid;
+  grid-template-columns: 300px 1fr;
+  height: calc(100dvh - var(--topbar-height));
+  overflow: hidden;
+}
+
+.listPane {
+  display: flex;
+  flex-direction: column;
+  border-right: 1px solid var(--line);
+  overflow: hidden;
+  background: var(--surface);
+}
+
+.listHeader {
+  padding: 14px 14px 0;
+  flex-shrink: 0;
+}
+
+.listTitle {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--ink);
+  letter-spacing: -0.02em;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--line);
+}
+
+.threadPane {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background: var(--bg);
+}
+
+@media (max-width: 768px) {
+  .splitPane {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto 1fr;
+  }
+
+  .listPane {
+    border-right: none;
+    border-bottom: 1px solid var(--line);
+    max-height: 40dvh;
+  }
+}
