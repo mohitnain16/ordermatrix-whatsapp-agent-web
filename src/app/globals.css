@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600;700&family=Fira+Sans:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700&family=Geist+Mono:wght@400;500&family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500;12..96,600;12..96,700&display=swap');
 
 *, *::before, *::after {
   box-sizing: border-box;
@@ -7,43 +7,42 @@
 }
 
 :root {
-  /* Fonts — Fira Code (headings/mono) + Fira Sans (body) */
-  --font-sans: 'Fira Sans', 'Helvetica Neue', system-ui, sans-serif;
-  --font-heading: 'Fira Code', 'SF Mono', monospace;
-  --font-mono: 'Fira Code', 'SF Mono', monospace;
+  /* Fonts */
+  --font-sans: 'Geist', 'Helvetica Neue', system-ui, sans-serif;
+  --font-heading: 'Bricolage Grotesque', 'Geist', sans-serif;
+  --font-mono: 'Geist Mono', 'SF Mono', monospace;
 
-  /* ─── Design system tokens (dark glassmorphism) ─────────────────────────── */
   /* Backgrounds */
-  --bg: #0F172A;
-  --surface: #1B2336;
-  --surface-2: #1E293B;
-  --surface-3: #272F42;
+  --bg: #F7F5F0;
+  --surface: #FFFFFF;
+  --surface-2: #FAF8F5;
+  --surface-3: #F2EEE8;
 
-  /* Ink (text) — light on dark */
-  --ink: #F8FAFC;
-  --ink-2: #E2E8F0;
-  --ink-3: #94A3B8;
-  --ink-4: #64748B;
+  /* Ink (text) */
+  --ink: #14130F;
+  --ink-2: #36332D;
+  --ink-3: #6B665D;
+  --ink-4: #9A958B;
 
   /* Borders */
-  --line: #334155;
-  --line-2: #475569;
+  --line: #E8E3DA;
+  --line-2: #DDD6CB;
 
-  /* Accent — green CTA (#22C55E = MASTER accent/CTA) */
-  --accent: #22C55E;
-  --accent-hover: #16A34A;
-  --accent-soft: #14291C;
-  --accent-deep: #4ADE80;
+  /* Accent — Ordermatrix terracotta */
+  --accent: #E8593A;
+  --accent-hover: #D14A2C;
+  --accent-soft: #FBE7E0;
+  --accent-deep: #B8412A;
 
   /* Semantic */
-  --green: #22C55E;
-  --green-soft: #14291C;
-  --amber: #F59E0B;
-  --amber-soft: #2D200A;
-  --red: #EF4444;
-  --red-soft: #2D1515;
-  --blue: #60A5FA;
-  --blue-soft: #111F35;
+  --green: #2E7D52;
+  --green-soft: #E6F4ED;
+  --amber: #B8851F;
+  --amber-soft: #FBF3DB;
+  --red: #C03A2A;
+  --red-soft: #FDEBEC;
+  --blue: #2D5BB8;
+  --blue-soft: #E1F3FE;
 
   /* Radius */
   --radius-sm: 4px;
@@ -57,17 +56,9 @@
   --sidebar-collapsed: 60px;
   --topbar-height: 56px;
 
-  /* Shadows — visible on dark backgrounds */
-  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.3);
-  --shadow: 0 4px 8px rgba(0, 0, 0, 0.35);
-  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.4);
-  --shadow-lg: 0 10px 24px rgba(0, 0, 0, 0.5);
-  --shadow-xl: 0 20px 40px rgba(0, 0, 0, 0.6);
-
-  /* Glassmorphism helpers */
-  --glass-bg: rgba(27, 35, 54, 0.82);
-  --glass-border: rgba(255, 255, 255, 0.08);
-  --glass-blur: blur(14px);
+  /* Shadow — ultra-diffuse, warm-tinted */
+  --shadow-sm: 0 1px 3px rgba(20, 19, 15, 0.06);
+  --shadow: 0 2px 8px rgba(20, 19, 15, 0.06);
 }
 
 html {
@@ -75,8 +66,6 @@ html {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
-  /* Prevent focused elements from being hidden by sticky topbar */
-  scroll-padding-top: var(--topbar-height);
 }
 
 body {
@@ -146,18 +135,9 @@ input, textarea, select {
   letter-spacing: 0.01em;
 }
 
-/* Focus ring — visible on dark surfaces, uses design system ring */
+/* Focus ring */
 :focus-visible {
   outline: 2px solid var(--accent);
   outline-offset: 2px;
   border-radius: var(--radius-sm);
-}
-
-/* Reduced motion */
-@media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
-  }
 }

@@ -113,7 +113,6 @@
 .replyInput:focus {
   outline: none;
   border-color: var(--accent);
-  box-shadow: 0 0 0 2px rgba(34, 197, 94, 0.15);
 }
 
 .replyInput:disabled {

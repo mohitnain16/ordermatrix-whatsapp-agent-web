@@ -70,7 +70,6 @@ export function CustomerProfilePanel({ customerId, phone, onClose }: CustomerPro
   const [customer, setCustomer] = useState<Customer | null>(null);
   const [stats, setStats] = useState<CustomerStats | null>(null);
   const [loadError, setLoadError] = useState('');
-  const panelRef = useRef<HTMLDivElement>(null);
 
   // Tags state
   const [tags, setTags] = useState<string[]>([]);
@@ -86,20 +85,9 @@ export function CustomerProfilePanel({ customerId, phone, onClose }: CustomerPro
   const [isBlocked, setIsBlocked] = useState(false);
   const [blockState, setBlockState] = useState<'idle' | 'confirming' | 'saving'>('idle');
 
-  // Two-phase mount: CSS transition then move focus into panel (a11y)
+  // Two-phase mount for transition
   useEffect(() => {
-    const raf = requestAnimationFrame(() => {
-      setVisible(true);
-      // After slide-in transition (300ms), move focus to first focusable element
-      setTimeout(() => {
-        const panel = panelRef.current;
-        if (!panel) return;
-        const focusable = panel.querySelector<HTMLElement>(
-          'button:not([disabled]), [href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])'
-        );
-        focusable?.focus();
-      }, 310);
-    });
+    const raf = requestAnimationFrame(() => setVisible(true));
     return () => cancelAnimationFrame(raf);
   }, []);
 
@@ -228,7 +216,6 @@ export function CustomerProfilePanel({ customerId, phone, onClose }: CustomerPro
 
       {/* Slide-out panel */}
       <div
-        ref={panelRef}
         className={clsx(styles.panel, visible && styles.panelVisible)}
         role="dialog"
         aria-modal="true"
