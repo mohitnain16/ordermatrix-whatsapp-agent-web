@@ -24,9 +24,9 @@
   height: 18px;
   padding: 0 4px;
   background: var(--accent);
-  color: #fff;
+  color: #0F172A; /* MASTER on-accent — dark on green for 7.5:1 contrast */
   font-size: 10px;
-  font-weight: 600;
+  font-weight: 700;
   border-radius: 9999px;
   font-family: var(--font-mono);
 }
