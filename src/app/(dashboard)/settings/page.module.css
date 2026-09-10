@@ -114,7 +114,8 @@
 }
 
 .formInput:focus {
-  border-color: var(--ink-3);
+  border-color: var(--accent);
+  box-shadow: 0 0 0 2px rgba(34, 197, 94, 0.15);
 }
 
 .formInput::placeholder {
@@ -138,7 +139,8 @@
 }
 
 .formTextarea:focus {
-  border-color: var(--ink-3);
+  border-color: var(--accent);
+  box-shadow: 0 0 0 2px rgba(34, 197, 94, 0.15);
 }
 
 .formTextarea::placeholder {
@@ -166,7 +168,8 @@
 }
 
 .formSelect:focus {
-  border-color: var(--ink-3);
+  border-color: var(--accent);
+  box-shadow: 0 0 0 2px rgba(34, 197, 94, 0.15);
 }
 
 /* ─── Read-only field (masked) ───────────────────────────────────────────── */
@@ -209,7 +212,8 @@
 }
 
 .ruleInput:focus {
-  border-color: var(--ink-3);
+  border-color: var(--accent);
+  box-shadow: 0 0 0 2px rgba(34, 197, 94, 0.15);
 }
 
 .ruleInput::placeholder {

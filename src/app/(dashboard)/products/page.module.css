@@ -129,7 +129,8 @@
 }
 
 .searchInput:focus {
-  border-color: var(--ink-3);
+  border-color: var(--accent);
+  box-shadow: 0 0 0 2px rgba(34, 197, 94, 0.15);
 }
 
 .searchInput::placeholder {
@@ -321,7 +322,7 @@
 }
 
 .cardActionBtnConfirm:hover {
-  background: #fad5d2;
+  background: rgba(239, 68, 68, 0.22);
   color: var(--red);
   border-color: transparent;
 }
@@ -479,7 +480,8 @@
 }
 
 .formInput:focus {
-  border-color: var(--ink-3);
+  border-color: var(--accent);
+  box-shadow: 0 0 0 2px rgba(34, 197, 94, 0.15);
 }
 
 .formInput::placeholder {
