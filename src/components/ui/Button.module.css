@@ -36,12 +36,12 @@
 
 /* Variants */
 .primary {
-  background: var(--ink);
-  color: #fff;
+  background: var(--primary);
+  color: #ffffff;
 }
 
 .primary:hover:not(:disabled) {
-  background: var(--ink-2);
+  background: var(--primary-hover);
 }
 
 .ghost {

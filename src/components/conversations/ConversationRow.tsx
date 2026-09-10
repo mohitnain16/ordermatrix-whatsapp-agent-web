@@ -2,12 +2,14 @@
 import Link from 'next/link';
 import { clsx } from 'clsx';
 import { formatPhone, formatDate, truncate } from '@/lib/utils';
+import { CustomerAvatar } from '@/components/ui/CustomerAvatar';
 import styles from './ConversationRow.module.css';
 
 export interface ConversationPreview {
   _id: string;
   customerId?: string;
   customerPhone: string;
+  customerName?: string;
   lastMessageAt: string;
   lastMessage?: string;
   role?: 'user' | 'assistant';
@@ -19,13 +21,8 @@ interface ConversationRowProps {
   active?: boolean;
 }
 
-function PhoneAvatar({ phone }: { phone: string }) {
-  const initials = phone.replace(/\D/g, '').slice(-2);
-  return <div className={styles.avatar}>{initials}</div>;
-}
-
 export function ConversationRow({ conversation, active }: ConversationRowProps) {
-  const { _id, customerPhone, lastMessage, lastMessageAt, role, unread } = conversation;
+  const { _id, customerPhone, customerName, lastMessage, lastMessageAt, role, unread } = conversation;
   const formattedPhone = formatPhone(customerPhone);
   const preview = truncate(lastMessage ?? '', 52);
 
@@ -34,7 +31,7 @@ export function ConversationRow({ conversation, active }: ConversationRowProps) 
       href={`/conversations/${encodeURIComponent(customerPhone)}`}
       className={clsx(styles.row, active && styles.active)}
     >
-      <PhoneAvatar phone={customerPhone} />
+      <CustomerAvatar phone={customerPhone} name={customerName} size={36} />
       <div className={styles.body}>
         <div className={styles.top}>
           <span className={styles.phone}>{formattedPhone}</span>

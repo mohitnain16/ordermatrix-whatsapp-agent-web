@@ -6,6 +6,7 @@ import { clsx } from 'clsx';
 import { useTenant } from '@/context/TenantContext';
 import { api } from '@/lib/api';
 import { Button } from '@/components/ui/Button';
+import { CustomerAvatar } from '@/components/ui/CustomerAvatar';
 import { formatPhone } from '@/lib/utils';
 import styles from './CustomerProfilePanel.module.css';
 
@@ -39,10 +40,6 @@ function formatAbsDate(iso: string | null): string {
   return new Date(iso).toLocaleDateString('en-IN', {
     day: 'numeric', month: 'short', year: 'numeric',
   });
-}
-
-function phoneInitials(phone: string): string {
-  return phone.replace(/\D/g, '').slice(-2);
 }
 
 // ─── Sub-components ───────────────────────────────────────────────────────────
@@ -202,7 +199,6 @@ export function CustomerProfilePanel({ customerId, phone, onClose }: CustomerPro
 
   // ── Render ───────────────────────────────────────────────────────────────────
   const displayName = customer?.name || formatPhone(phone);
-  const initials = phoneInitials(phone);
   const availablePresets = TAG_PRESETS.filter(p => !tags.includes(p));
 
   const panelContent = (
@@ -224,9 +220,7 @@ export function CustomerProfilePanel({ customerId, phone, onClose }: CustomerPro
         {/* Header */}
         <div className={styles.panelHeader}>
           <div className={styles.avatarWrap}>
-            <div className={clsx(styles.avatar, isBlocked && styles.avatarBlocked)}>
-              {initials}
-            </div>
+            <CustomerAvatar phone={phone} name={customer?.name} size={64} blocked={isBlocked} />
           </div>
           <div className={styles.headerInfo}>
             <div className={styles.headerName}>{displayName}</div>

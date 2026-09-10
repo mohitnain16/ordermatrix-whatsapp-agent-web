@@ -1,18 +1,31 @@
+/* ─── Thread shell ────────────────────────────────────────────────────────────
+   Full-height flex column. `position: relative` anchors the floating pill.     */
 .thread {
   display: flex;
   flex-direction: column;
   height: 100%;
   overflow: hidden;
+  position: relative;
+  background: var(--surface);
 }
 
+/* ─── Header ──────────────────────────────────────────────────────────────────  */
 .header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 12px 20px;
+  padding: 10px 20px;
   border-bottom: 1px solid var(--line);
   flex-shrink: 0;
   background: var(--surface);
+  z-index: 1;
+}
+
+.headerLeft {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
 }
 
 .phone {
@@ -20,6 +33,9 @@
   font-size: 13px;
   font-weight: 500;
   color: var(--ink);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .count {
@@ -47,81 +63,211 @@
   color: var(--ink);
 }
 
+/* ─── Scrollable message list ─────────────────────────────────────────────────
+   Horizontal padding uses max() to center content at 768px max-width while
+   staying at least 16px from each edge on narrower panels.
+   Bottom padding reserves space for the absolutely-positioned pill.            */
 .messages {
   flex: 1;
   overflow-y: auto;
-  padding: 12px 0 20px;
+  background: var(--bg);
+  padding-top: 20px;
+  padding-bottom: 110px;
+  padding-inline: max(16px, calc((100% - 768px) / 2));
   display: flex;
   flex-direction: column;
 }
 
-.error {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 32px 20px;
-  font-size: 13px;
-  color: var(--red);
+/* ─── Message row spacing ─────────────────────────────────────────────────────
+   Wrapper divs around each <Message> control spacing so adjacent-sibling CSS
+   selectors aren't needed across component boundaries.
+   rowDiff fires on sender change OR >5-minute gap between messages.            */
+.rowFirst { margin-top: 0;     animation: msgFadeIn 160ms ease; }
+.rowSame  { margin-top: 6px;   animation: msgFadeIn 160ms ease; }
+.rowDiff  { margin-top: 1.5rem; animation: msgFadeIn 160ms ease; }
+
+@keyframes msgFadeIn {
+  from { opacity: 0; transform: translateY(5px); }
+  to   { opacity: 1; transform: translateY(0);   }
 }
 
-.emptyThread {
+/* ─── Shared state box (error / empty) ───────────────────────────────────────  */
+.stateBox {
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 32px 20px;
+  padding: 40px 20px;
   font-size: 13px;
   color: var(--ink-4);
+  text-align: center;
 }
 
-.replyBar {
-  flex-shrink: 0;
-  border-top: 1px solid var(--line);
-  padding: 10px 16px 12px;
-  background: var(--surface);
+/* ─── Typing indicator bubble ─────────────────────────────────────────────────
+   Appears as a left-aligned (inbound-style) bubble while the agent is sending. */
+.typingRow {
+  display: flex;
+  justify-content: flex-start;
+}
+
+.typingBubble {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 10px 14px;
+  background: var(--surface-2);
+  border: 0.5px solid var(--line);
+  border-radius: var(--radius-md) var(--radius-md) var(--radius-md) var(--radius-sm);
+}
+
+.dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--ink-4);
+  display: block;
+}
+
+.dot1 { animation: typingDot 1.2s ease infinite 0ms;   }
+.dot2 { animation: typingDot 1.2s ease infinite 200ms; }
+.dot3 { animation: typingDot 1.2s ease infinite 400ms; }
+
+@keyframes typingDot {
+  0%, 60%, 100% { opacity: 0.3; transform: translateY(0);    }
+  30%           { opacity: 1;   transform: translateY(-4px); }
+}
+
+/* ─── "New message ↓" pill ────────────────────────────────────────────────────
+   Floats above the input pill when the user is scrolled up reading history.    */
+.newMsgPillRow {
+  position: absolute;
+  bottom: 96px;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: center;
+  pointer-events: none;
+  z-index: 11;
+}
+
+.newMsgPill {
+  pointer-events: auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 6px 14px;
+  background: var(--primary);
+  color: #ffffff;
+  font-size: 12px;
+  font-weight: 500;
+  font-family: var(--font-sans);
+  border: none;
+  border-radius: 9999px;
+  cursor: pointer;
+  box-shadow: 0 2px 10px rgba(37, 99, 235, 0.35);
+  transition: background 120ms ease, box-shadow 120ms ease;
+  white-space: nowrap;
+}
+
+.newMsgPill:hover { background: var(--primary-hover); box-shadow: 0 4px 16px rgba(37, 99, 235, 0.4); }
+.newMsgPill:active { background: var(--primary-deep); }
+
+/* ─── Floating pill input ─────────────────────────────────────────────────────
+   Absolutely positioned over the bottom of the message list.
+   The gradient fade ensures messages don't hard-cut behind the pill.           */
+.pillWrap {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding-top: 32px;   /* gradient lead-in height */
+  padding-bottom: 14px;
+  padding-inline: max(16px, calc((100% - 768px) / 2));
+  background: linear-gradient(to top, var(--bg) 60%, transparent);
+  z-index: 10;
   display: flex;
   flex-direction: column;
   gap: 6px;
 }
 
-.replyRow {
+/* The pill itself: rounded container with textarea + send button inside */
+.pillOuter {
   display: flex;
-  gap: 8px;
   align-items: flex-end;
+  gap: 8px;
+  background: var(--surface-2);
+  border: 0.5px solid var(--line-2);
+  border-radius: 24px;
+  box-shadow: 0 2px 14px rgba(15, 23, 42, 0.07), 0 0 0 0.5px rgba(15, 23, 42, 0.04);
+  padding: 10px 10px 10px 18px;
+  transition: box-shadow 150ms ease, border-color 150ms ease;
 }
 
-.replyInput {
+.pillOuter:focus-within {
+  border-color: var(--primary);
+  box-shadow: 0 2px 14px rgba(15, 23, 42, 0.07), 0 0 0 3px rgba(37, 99, 235, 0.10);
+}
+
+/* Auto-resizing textarea — no visual chrome, just the text */
+.pillTextarea {
   flex: 1;
   resize: none;
-  min-height: 38px;
-  max-height: 120px;
-  padding: 8px 12px;
-  background: var(--surface-2);
-  border: 1px solid var(--line);
-  border-radius: var(--radius);
-  font-size: 14px;
+  min-height: 22px;
+  max-height: 120px;   /* ~5 lines */
+  padding: 0;
+  background: transparent;
+  border: none;
+  outline: none;
+  font-size: 15px;
   font-family: var(--font-sans);
   color: var(--ink);
-  line-height: 1.4;
-  transition: border-color 150ms ease;
+  line-height: 1.5;
   overflow-y: auto;
+  scrollbar-width: none;
 }
 
-.replyInput::placeholder {
-  color: var(--ink-4);
-}
+.pillTextarea::-webkit-scrollbar { display: none; }
 
-.replyInput:focus {
-  outline: none;
-  border-color: var(--accent);
-}
+.pillTextarea::placeholder { color: var(--ink-4); }
 
-.replyInput:disabled {
+.pillTextarea:disabled {
   opacity: 0.5;
   cursor: not-allowed;
+}
+
+/* Circular send button — anchored right inside the pill */
+.sendBtn {
+  flex-shrink: 0;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: var(--primary);
+  color: #ffffff;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background 120ms ease, transform 80ms ease, opacity 120ms ease;
+}
+
+.sendBtn:hover:not(:disabled) {
+  background: var(--primary-hover);
+}
+
+.sendBtn:active:not(:disabled) {
+  transform: scale(0.92);
+}
+
+.sendBtn:disabled {
+  background: var(--surface-3);
+  color: var(--ink-4);
+  cursor: not-allowed;
+  opacity: 0.7;
 }
 
 .sendError {
   font-size: 12px;
   color: var(--red);
   margin: 0;
+  padding: 0 4px;
 }

@@ -53,25 +53,6 @@
   flex-shrink: 0;
 }
 
-.avatar {
-  width: 44px;
-  height: 44px;
-  border-radius: 50%;
-  background: var(--accent-soft);
-  color: var(--accent-deep);
-  font-size: 15px;
-  font-weight: 600;
-  font-family: var(--font-mono);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  letter-spacing: -0.01em;
-}
-
-.avatarBlocked {
-  background: var(--red-soft);
-  color: var(--red);
-}
 
 .headerInfo {
   flex: 1;

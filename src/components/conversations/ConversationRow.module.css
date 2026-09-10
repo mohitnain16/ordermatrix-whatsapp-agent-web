@@ -18,27 +18,6 @@
   background: var(--accent-soft);
 }
 
-.avatar {
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
-  background: var(--surface-3);
-  border: 1px solid var(--line);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-family: var(--font-mono);
-  font-size: 11px;
-  font-weight: 600;
-  color: var(--ink-3);
-  flex-shrink: 0;
-}
-
-.row.active .avatar {
-  background: var(--accent-soft);
-  border-color: var(--accent-soft);
-  color: var(--accent-deep);
-}
 
 .body {
   flex: 1;

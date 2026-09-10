@@ -80,8 +80,9 @@
 }
 
 .navItem.active {
-  background: var(--accent-soft);
-  color: var(--accent-deep);
+  background: var(--primary-soft);
+  color: var(--primary);
+  font-weight: 600;
 }
 
 .navLabel {
