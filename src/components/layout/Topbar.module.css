@@ -50,3 +50,25 @@
   background: var(--surface-3);
   color: var(--red);
 }
+
+/* OM logo shown in topbar on mobile when sidebar is hidden */
+.mobileLogo {
+  display: none;
+  font-family: var(--font-heading);
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--accent);
+  letter-spacing: -0.02em;
+}
+
+/* ─── Responsive ─────────────────────────────────────────────────────────── */
+@media (max-width: 639px) {
+  .topbar {
+    /* Spans full width (sidebar column removed by DashboardShell) */
+    padding: 0 14px;
+  }
+
+  .mobileLogo {
+    display: block;
+  }
+}

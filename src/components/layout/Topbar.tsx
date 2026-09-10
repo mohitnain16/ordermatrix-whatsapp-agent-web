@@ -19,6 +19,8 @@ export function Topbar({ title }: TopbarProps) {
   return (
     <header className={styles.topbar}>
       <div className={styles.left}>
+        {/* Logo shown on mobile (sidebar hidden); invisible on desktop */}
+        <span className={styles.mobileLogo}>OM</span>
         {title && <h1 className={styles.title}>{title}</h1>}
       </div>
       <div className={styles.right}>
