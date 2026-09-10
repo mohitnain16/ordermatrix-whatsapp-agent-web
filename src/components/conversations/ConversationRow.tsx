@@ -13,7 +13,7 @@ export interface ConversationPreview {
   lastMessageAt: string;
   lastMessage?: string;
   role?: 'user' | 'assistant';
-  unread?: number;
+  unreadCount?: number;
 }
 
 interface ConversationRowProps {
@@ -22,14 +22,15 @@ interface ConversationRowProps {
 }
 
 export function ConversationRow({ conversation, active }: ConversationRowProps) {
-  const { _id, customerPhone, customerName, lastMessage, lastMessageAt, role, unread } = conversation;
+  const { _id: _unused, customerPhone, customerName, lastMessage, lastMessageAt, role, unreadCount } = conversation;
   const formattedPhone = formatPhone(customerPhone);
   const preview = truncate(lastMessage ?? '', 52);
+  const hasUnread = (unreadCount ?? 0) > 0;
 
   return (
     <Link
       href={`/conversations/${encodeURIComponent(customerPhone)}`}
-      className={clsx(styles.row, active && styles.active)}
+      className={clsx(styles.row, active && styles.active, hasUnread && styles.unread)}
     >
       <CustomerAvatar phone={customerPhone} name={customerName} size={36} />
       <div className={styles.body}>
@@ -44,8 +45,10 @@ export function ConversationRow({ conversation, active }: ConversationRowProps) 
           {preview}
         </p>
       </div>
-      {unread != null && unread > 0 && (
-        <span className={styles.unreadDot} />
+      {hasUnread && (
+        <span className={styles.unreadBadge}>
+          {(unreadCount ?? 0) > 9 ? '9+' : unreadCount}
+        </span>
       )}
     </Link>
   );

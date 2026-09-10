@@ -75,10 +75,33 @@
   flex-shrink: 0;
 }
 
-.unreadDot {
-  width: 7px;
-  height: 7px;
-  background: var(--accent);
-  border-radius: 50%;
+.unreadBadge {
   flex-shrink: 0;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+  background: var(--accent);
+  color: #fff;
+  border-radius: 100px;
+  font-size: 10px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  letter-spacing: 0;
+}
+
+/* Bold/emphasis state for rows with unread messages */
+.row.unread .phone {
+  font-weight: 700;
+  color: var(--ink);
+}
+
+.row.unread .preview {
+  color: var(--ink-2);
+  font-weight: 500;
+}
+
+.row.unread .time {
+  color: var(--ink-3);
 }

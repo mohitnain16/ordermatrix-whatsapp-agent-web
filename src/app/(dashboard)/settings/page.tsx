@@ -1,7 +1,9 @@
 'use client';
 import { useCallback, useEffect, useState } from 'react';
-import { Plus, X } from '@phosphor-icons/react';
+import { Plus, X, Bell, BellSlash, SpeakerHigh, SpeakerSlash } from '@phosphor-icons/react';
+import { clsx } from 'clsx';
 import { useTenant } from '@/context/TenantContext';
+import { useNotification } from '@/context/NotificationContext';
 import { api } from '@/lib/api';
 import { Button } from '@/components/ui/Button';
 import styles from './page.module.css';
@@ -33,8 +35,16 @@ function maskId(id: string): string {
   return '•'.repeat(id.length - 4) + id.slice(-4);
 }
 
+const PERMISSION_LABELS: Record<string, string> = {
+  granted: 'Granted — you will receive browser notifications',
+  denied: 'Denied — enable in your browser site settings to receive notifications',
+  default: 'Not yet requested',
+  unsupported: 'Not supported in this browser',
+};
+
 export default function SettingsPage() {
   const { activeTenant, loading: tenantLoading } = useTenant();
+  const { soundEnabled, setSoundEnabled, permission, requestPermission } = useNotification();
   const [detail, setDetail] = useState<TenantDetail | null>(null);
   const [loading, setLoading] = useState(true);
   const [fetchError, setFetchError] = useState('');
@@ -338,6 +348,64 @@ export default function SettingsPage() {
                   Add rule
                 </button>
               </div>
+            </div>
+          </div>
+        </div>
+
+        {/* ── Notifications ─────────────────────────────────────────────── */}
+        <div className={styles.section}>
+          <div className={styles.sectionHeader}>
+            <span className={styles.sectionTitle}>Notifications</span>
+          </div>
+          <div className={styles.sectionBody}>
+            {/* Sound toggle */}
+            <div className={styles.notifRow}>
+              <div>
+                <div className={styles.notifLabel}>Notification sound</div>
+                <div className={styles.notifSub}>
+                  Play a short sound when a new customer message arrives and you are not viewing that conversation.
+                </div>
+              </div>
+              <button
+                type="button"
+                className={clsx(styles.toggleBtn, soundEnabled && styles.toggleBtnOn)}
+                onClick={() => setSoundEnabled(!soundEnabled)}
+                aria-label={soundEnabled ? 'Mute notification sound' : 'Enable notification sound'}
+                title={soundEnabled ? 'Mute' : 'Unmute'}
+              >
+                {soundEnabled ? <SpeakerHigh size={15} weight="fill" /> : <SpeakerSlash size={15} />}
+                <span>{soundEnabled ? 'On' : 'Off'}</span>
+              </button>
+            </div>
+
+            {/* Browser notification permission */}
+            <div className={styles.notifRow}>
+              <div>
+                <div className={styles.notifLabel}>Browser notifications</div>
+                <div className={styles.notifSub}>
+                  {PERMISSION_LABELS[permission] ?? permission}
+                </div>
+              </div>
+              {permission === 'default' && (
+                <button
+                  type="button"
+                  className={clsx(styles.toggleBtn, styles.toggleBtnOn)}
+                  onClick={requestPermission}
+                >
+                  <Bell size={14} />
+                  <span>Enable</span>
+                </button>
+              )}
+              {permission === 'granted' && (
+                <span className={styles.permGranted}>
+                  <Bell size={14} weight="fill" /> Active
+                </span>
+              )}
+              {permission === 'denied' && (
+                <span className={styles.permDenied}>
+                  <BellSlash size={14} /> Blocked
+                </span>
+              )}
             </div>
           </div>
         </div>

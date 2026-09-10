@@ -1,0 +1,92 @@
+.stack {
+  position: fixed;
+  bottom: 24px;
+  right: 20px;
+  z-index: 9000;
+  display: flex;
+  flex-direction: column-reverse; /* newest at bottom */
+  gap: 8px;
+  width: 300px;
+  pointer-events: none;
+}
+
+.toast {
+  display: flex;
+  align-items: stretch;
+  background: var(--surface);
+  border: 1px solid var(--line-2);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-lg);
+  overflow: hidden;
+  pointer-events: all;
+  animation: slideIn 200ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@keyframes slideIn {
+  from { transform: translateX(110%); opacity: 0; }
+  to   { transform: translateX(0);    opacity: 1; }
+}
+
+.toastBody {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  padding: 10px 12px;
+  text-align: left;
+  background: none;
+  border: none;
+  cursor: pointer;
+  transition: background 120ms ease;
+}
+
+.toastBody:hover {
+  background: var(--surface-2);
+}
+
+.toastPhone {
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--ink);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.toastContent {
+  font-size: 12px;
+  color: var(--ink-3);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.toastClose {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  flex-shrink: 0;
+  background: none;
+  border: none;
+  border-left: 1px solid var(--line);
+  cursor: pointer;
+  color: var(--ink-4);
+  transition: background 120ms ease, color 120ms ease;
+}
+
+.toastClose:hover {
+  background: var(--surface-3);
+  color: var(--ink-2);
+}
+
+/* ── Mobile ──────────────────────────────────────────────────────────────── */
+@media (max-width: 639px) {
+  .stack {
+    bottom: 80px; /* above mobile nav area */
+    right: 12px;
+    left: 12px;
+    width: auto;
+  }
+}

@@ -4,6 +4,7 @@ import { MagnifyingGlass } from '@phosphor-icons/react';
 import { api } from '@/lib/api';
 import { useTenant } from '@/context/TenantContext';
 import { useSocket } from '@/context/SocketContext';
+import { useNotification } from '@/context/NotificationContext';
 import { ConversationRow, type ConversationPreview } from './ConversationRow';
 import { ConversationRowSkeleton } from '@/components/ui/Skeleton';
 import type { MessageData } from './Message';
@@ -16,6 +17,7 @@ interface ConversationListProps {
 export function ConversationList({ activePhone }: ConversationListProps) {
   const { activeTenant } = useTenant();
   const { socket, connected } = useSocket();
+  const { setUnreadBulk } = useNotification();
   const [conversations, setConversations] = useState<ConversationPreview[]>([]);
   const [loading, setLoading] = useState(true);
   const [query, setQuery] = useState('');
@@ -38,10 +40,14 @@ export function ConversationList({ activePhone }: ConversationListProps) {
       tenantId: activeTenant._id,
       limit: 50,
     })
-      .then(({ conversations }) => setConversations(conversations))
+      .then(({ conversations }) => {
+        setConversations(conversations);
+        // Seed the global unread map so the tab title is correct from first load.
+        setUnreadBulk(conversations.map(c => ({ id: c._id, count: c.unreadCount ?? 0 })));
+      })
       .catch(() => {})
       .finally(() => setLoading(false));
-  }, [activeTenant?._id]);
+  }, [activeTenant?._id, setUnreadBulk]);
 
   // Socket: live updates for conversation list.
   useEffect(() => {

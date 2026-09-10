@@ -106,6 +106,8 @@ export function MessageThread({ phone }: MessageThreadProps) {
         setConversationId(conv._id);
         if (conv.customerId) setCustomerId(conv.customerId);
         if (conv.customerName) setCustomerName(conv.customerName);
+        // Mark as read immediately — resets unread badge and notifies other clients.
+        api.post(`conversations/${conv._id}/read`, {}).catch(() => {});
         return api.get<{ messages: MessageData[] }>(`conversations/${conv._id}/messages`, {
           tenantId: activeTenant._id,
         });
@@ -139,6 +141,10 @@ export function MessageThread({ phone }: MessageThreadProps) {
         if (data.message._id && prev.some(m => m._id === data.message._id)) return prev;
         return [...prev, data.message];
       });
+      // User is viewing this conversation — mark read immediately.
+      if (data.message.direction === 'inbound') {
+        api.post(`conversations/${conversationId}/read`, {}).catch(() => {});
+      }
     }
 
     function onMessageStatus(data: { messageId: string; conversationId: string; deliveryStatus: string }) {
