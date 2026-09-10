@@ -28,6 +28,25 @@
   color: var(--ink-4);
 }
 
+.profileBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: var(--radius);
+  border: 1px solid var(--line);
+  background: transparent;
+  color: var(--ink-3);
+  cursor: pointer;
+  transition: background 120ms ease, color 120ms ease;
+}
+
+.profileBtn:hover {
+  background: var(--surface-3);
+  color: var(--ink);
+}
+
 .messages {
   flex: 1;
   overflow-y: auto;

@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import {
   ChatCircleText,
+  Users,
   CreditCard,
   Package,
   Gear,
@@ -31,6 +32,7 @@ export function Sidebar({ collapsed, onToggle, pendingFlags = 0 }: SidebarProps)
 
   const navItems: NavItem[] = [
     { href: '/conversations', label: 'Conversations', icon: ChatCircleText },
+    { href: '/customers', label: 'Customers', icon: Users },
     { href: '/payment-flags', label: 'Payment Flags', icon: CreditCard, badge: pendingFlags },
     { href: '/products', label: 'Products', icon: Package },
     { href: '/settings', label: 'Settings', icon: Gear },

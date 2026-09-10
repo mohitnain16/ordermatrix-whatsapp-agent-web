@@ -6,6 +6,7 @@ import styles from './ConversationRow.module.css';
 
 export interface ConversationPreview {
   _id: string;
+  customerId?: string;
   customerPhone: string;
   lastMessageAt: string;
   lastMessage?: string;

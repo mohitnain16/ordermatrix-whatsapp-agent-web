@@ -1,9 +1,11 @@
 'use client';
 import { useEffect, useRef, useState } from 'react';
+import { UserCircle } from '@phosphor-icons/react';
 import { api } from '@/lib/api';
 import { useTenant } from '@/context/TenantContext';
 import { formatPhone } from '@/lib/utils';
 import { Button } from '@/components/ui/Button';
+import { CustomerProfilePanel } from '@/components/customers/CustomerProfilePanel';
 import { Message, type MessageData } from './Message';
 import { DateSeparator } from './DateSeparator';
 import { MessageSkeleton } from '@/components/ui/Skeleton';
@@ -21,21 +23,24 @@ function isSameDay(a: string, b: string): boolean {
 export function MessageThread({ phone }: MessageThreadProps) {
   const { activeTenant } = useTenant();
   const [conversationId, setConversationId] = useState<string | null>(null);
+  const [customerId, setCustomerId] = useState<string | null>(null);
   const [messages, setMessages] = useState<MessageData[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [replyText, setReplyText] = useState('');
   const [sending, setSending] = useState(false);
   const [sendError, setSendError] = useState<string | null>(null);
+  const [showProfile, setShowProfile] = useState(false);
   const bottomRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
 
-  // Step 1: resolve phone → conversationId, then load messages
+  // Step 1: resolve phone → conversationId (and customerId), then load messages
   useEffect(() => {
     if (!activeTenant) return;
     setLoading(true);
     setError(null);
     setConversationId(null);
+    setCustomerId(null);
     setMessages([]);
 
     api.get<{ conversations: ConversationPreview[] }>('conversations', {
@@ -46,6 +51,7 @@ export function MessageThread({ phone }: MessageThreadProps) {
         const conv = conversations[0];
         if (!conv) throw new Error('Conversation not found');
         setConversationId(conv._id);
+        if (conv.customerId) setCustomerId(conv.customerId);
         return api.get<{ messages: MessageData[] }>(`conversations/${conv._id}/messages`, {
           tenantId: activeTenant._id,
         });
@@ -72,6 +78,7 @@ export function MessageThread({ phone }: MessageThreadProps) {
   useEffect(() => {
     setReplyText('');
     setSendError(null);
+    setShowProfile(false);
   }, [phone]);
 
   useEffect(() => {
@@ -118,9 +125,21 @@ export function MessageThread({ phone }: MessageThreadProps) {
     <div className={styles.thread}>
       <div className={styles.header}>
         <span className={styles.phone}>{formattedPhone}</span>
-        <span className={styles.count}>
-          {!loading && `${messages.length} messages`}
-        </span>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+          <span className={styles.count}>
+            {!loading && `${messages.length} messages`}
+          </span>
+          {customerId && (
+            <button
+              className={styles.profileBtn}
+              onClick={() => setShowProfile(true)}
+              aria-label="View customer profile"
+              title="Customer profile"
+            >
+              <UserCircle size={18} />
+            </button>
+          )}
+        </div>
       </div>
 
       <div className={styles.messages}>
@@ -187,6 +206,14 @@ export function MessageThread({ phone }: MessageThreadProps) {
           </Button>
         </div>
       </div>
+
+      {showProfile && customerId && (
+        <CustomerProfilePanel
+          customerId={customerId}
+          phone={phone}
+          onClose={() => setShowProfile(false)}
+        />
+      )}
     </div>
   );
 }
