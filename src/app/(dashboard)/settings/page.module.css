@@ -296,3 +296,35 @@
   color: var(--ink-4);
   margin-top: 2px;
 }
+
+/* ─── Responsive ─────────────────────────────────────────────────────────── */
+@media (max-width: 639px) {
+  .page {
+    padding: 16px;
+    max-width: 100%;
+    gap: 20px;
+  }
+
+  .formGrid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  /* 44px minimum touch targets for all interactive fields */
+  .formInput,
+  .formTextarea,
+  .formSelect,
+  .ruleInput {
+    min-height: 44px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+  }
+
+  .formTextarea {
+    min-height: 88px;
+  }
+
+  .saveRow {
+    flex-wrap: wrap;
+  }
+}

@@ -500,3 +500,35 @@
   color: var(--red);
   margin-right: auto;
 }
+
+/* ─── Responsive ─────────────────────────────────────────────────────────── */
+@media (max-width: 639px) {
+  .page {
+    padding: 16px;
+  }
+
+  .grid {
+    grid-template-columns: 1fr;
+  }
+
+  /* Make card actions always visible on touch (no hover) */
+  .cardActions {
+    opacity: 1;
+  }
+
+  .formGrid {
+    grid-template-columns: 1fr;
+  }
+
+  /* Modal slides up from bottom on mobile */
+  .overlay {
+    padding: 0;
+    align-items: flex-end;
+  }
+
+  .modal {
+    max-width: 100%;
+    border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+    max-height: 92dvh;
+  }
+}
