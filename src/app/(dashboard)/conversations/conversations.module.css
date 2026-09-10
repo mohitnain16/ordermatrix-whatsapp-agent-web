@@ -34,15 +34,52 @@
   background: var(--bg);
 }
 
-@media (max-width: 768px) {
+/* Back button: hidden on desktop, shown on mobile inside thread view */
+.mobileBack {
+  display: none;
+}
+
+@media (max-width: 639px) {
   .splitPane {
     grid-template-columns: 1fr;
-    grid-template-rows: auto 1fr;
+    height: calc(100dvh - var(--topbar-height) - 52px - env(safe-area-inset-bottom));
   }
 
-  .listPane {
+  /* List-only view (/conversations): fill the pane, hide thread */
+  .listOnly .listPane {
+    flex: 1;
     border-right: none;
+    max-height: unset;
+  }
+  .listOnly .threadPane {
+    display: none;
+  }
+
+  /* Thread-only view (/conversations/[phone]): fill the pane, hide list */
+  .threadOnly .listPane {
+    display: none;
+  }
+  .threadOnly .threadPane {
+    flex: 1;
+  }
+
+  /* Back chevron shown inside thread pane on mobile */
+  .mobileBack {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-shrink: 0;
+    padding: 10px 16px;
+    background: var(--surface);
     border-bottom: 1px solid var(--line);
-    max-height: 40dvh;
+    color: var(--primary);
+    font-size: 13px;
+    font-weight: 500;
+    text-decoration: none;
+    transition: background 120ms ease;
+  }
+
+  .mobileBack:hover {
+    background: var(--surface-2);
   }
 }

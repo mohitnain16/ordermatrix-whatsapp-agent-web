@@ -1,9 +1,12 @@
 /* ─── Thread shell ────────────────────────────────────────────────────────────
-   Full-height flex column. `position: relative` anchors the floating pill.     */
+   Full-height flex column. `position: relative` anchors the floating pill.
+   flex: 1 + min-height: 0 allows it to grow within a flex parent that may
+   contain a mobile back-button above it.                                       */
 .thread {
   display: flex;
   flex-direction: column;
-  height: 100%;
+  flex: 1;
+  min-height: 0;
   overflow: hidden;
   position: relative;
   background: var(--surface);
@@ -180,7 +183,7 @@
   left: 0;
   right: 0;
   padding-top: 32px;   /* gradient lead-in height */
-  padding-bottom: 14px;
+  padding-bottom: max(14px, env(safe-area-inset-bottom));
   padding-inline: max(16px, calc((100% - 768px) / 2));
   background: linear-gradient(to top, var(--bg) 60%, transparent);
   z-index: 10;

@@ -5,7 +5,7 @@ import styles from './conversations.module.css';
 
 export default function ConversationsPage() {
   return (
-    <div className={styles.splitPane}>
+    <div className={`${styles.splitPane} ${styles.listOnly}`}>
       <div className={styles.listPane}>
         <div className={styles.listHeader}>
           <h2 className={styles.listTitle}>Conversations</h2>
