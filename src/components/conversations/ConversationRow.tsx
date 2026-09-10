@@ -5,10 +5,11 @@ import { formatPhone, formatDate, truncate } from '@/lib/utils';
 import styles from './ConversationRow.module.css';
 
 export interface ConversationPreview {
-  phone: string;
-  lastMessage: string;
+  _id: string;
+  customerPhone: string;
   lastMessageAt: string;
-  role: 'user' | 'assistant';
+  lastMessage?: string;
+  role?: 'user' | 'assistant';
   unread?: number;
 }
 
@@ -23,16 +24,16 @@ function PhoneAvatar({ phone }: { phone: string }) {
 }
 
 export function ConversationRow({ conversation, active }: ConversationRowProps) {
-  const { phone, lastMessage, lastMessageAt, role, unread } = conversation;
-  const formattedPhone = formatPhone(phone);
-  const preview = truncate(lastMessage, 52);
+  const { _id, customerPhone, lastMessage, lastMessageAt, role, unread } = conversation;
+  const formattedPhone = formatPhone(customerPhone);
+  const preview = truncate(lastMessage ?? '', 52);
 
   return (
     <Link
-      href={`/conversations/${encodeURIComponent(phone)}`}
+      href={`/conversations/${encodeURIComponent(customerPhone)}`}
       className={clsx(styles.row, active && styles.active)}
     >
-      <PhoneAvatar phone={phone} />
+      <PhoneAvatar phone={customerPhone} />
       <div className={styles.body}>
         <div className={styles.top}>
           <span className={styles.phone}>{formattedPhone}</span>

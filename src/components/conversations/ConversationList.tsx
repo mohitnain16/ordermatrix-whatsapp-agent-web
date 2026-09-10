@@ -1,5 +1,5 @@
 'use client';
-import { useState, useMemo, useEffect } from 'react';
+import { useState, useMemo, useEffect, useCallback } from 'react';
 import { MagnifyingGlass } from '@phosphor-icons/react';
 import { api } from '@/lib/api';
 import { useTenant } from '@/context/TenantContext';
@@ -17,6 +17,16 @@ export function ConversationList({ activePhone }: ConversationListProps) {
   const [loading, setLoading] = useState(true);
   const [query, setQuery] = useState('');
 
+  const fetchConversations = useCallback(() => {
+    if (!activeTenant) return;
+    api.get<{ conversations: ConversationPreview[] }>('conversations', {
+      tenantId: activeTenant._id,
+      limit: 50,
+    })
+      .then(({ conversations }) => setConversations(conversations))
+      .catch(() => {});
+  }, [activeTenant?._id]);
+
   useEffect(() => {
     if (!activeTenant) return;
     setLoading(true);
@@ -27,13 +37,16 @@ export function ConversationList({ activePhone }: ConversationListProps) {
       .then(({ conversations }) => setConversations(conversations))
       .catch(() => {})
       .finally(() => setLoading(false));
-  }, [activeTenant?._id]);
+
+    const interval = setInterval(fetchConversations, 5000);
+    return () => clearInterval(interval);
+  }, [activeTenant?._id, fetchConversations]);
 
   const filtered = useMemo(() => {
     if (!query.trim()) return conversations;
     const q = query.toLowerCase().replace(/\D/g, '');
     return conversations.filter(c =>
-      c.phone.replace(/\D/g, '').includes(q)
+      c.customerPhone.replace(/\D/g, '').includes(q)
     );
   }, [conversations, query]);
 
@@ -61,9 +74,9 @@ export function ConversationList({ activePhone }: ConversationListProps) {
         )}
         {!loading && filtered.map(c => (
           <ConversationRow
-            key={c.phone}
+            key={c._id}
             conversation={c}
-            active={c.phone === activePhone}
+            active={c.customerPhone === activePhone}
           />
         ))}
       </div>

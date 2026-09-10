@@ -4,7 +4,7 @@ import styles from './Message.module.css';
 
 export interface MessageData {
   _id?: string;
-  role: 'user' | 'assistant' | 'system';
+  direction: 'inbound' | 'outbound';
   content: string;
   timestamp: string;
   toolCall?: ToolCall;
@@ -16,16 +16,7 @@ interface MessageProps {
 }
 
 export function Message({ message, isLast }: MessageProps) {
-  const isInbound = message.role === 'user';
-  const isSystem = message.role === 'system';
-
-  if (isSystem) {
-    return (
-      <div className={styles.system}>
-        <span>{message.content}</span>
-      </div>
-    );
-  }
+  const isInbound = message.direction === 'inbound';
 
   return (
     <div className={isInbound ? styles.inbound : styles.outbound}>

@@ -53,3 +53,56 @@
   font-size: 13px;
   color: var(--ink-4);
 }
+
+.replyBar {
+  flex-shrink: 0;
+  border-top: 1px solid var(--line);
+  padding: 10px 16px 12px;
+  background: var(--surface);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.replyRow {
+  display: flex;
+  gap: 8px;
+  align-items: flex-end;
+}
+
+.replyInput {
+  flex: 1;
+  resize: none;
+  min-height: 38px;
+  max-height: 120px;
+  padding: 8px 12px;
+  background: var(--surface-2);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  font-size: 14px;
+  font-family: var(--font-sans);
+  color: var(--ink);
+  line-height: 1.4;
+  transition: border-color 150ms ease;
+  overflow-y: auto;
+}
+
+.replyInput::placeholder {
+  color: var(--ink-4);
+}
+
+.replyInput:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+.replyInput:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.sendError {
+  font-size: 12px;
+  color: var(--red);
+  margin: 0;
+}
