@@ -3,8 +3,10 @@ import { useState, useMemo, useEffect, useCallback } from 'react';
 import { MagnifyingGlass } from '@phosphor-icons/react';
 import { api } from '@/lib/api';
 import { useTenant } from '@/context/TenantContext';
+import { useSocket } from '@/context/SocketContext';
 import { ConversationRow, type ConversationPreview } from './ConversationRow';
 import { ConversationRowSkeleton } from '@/components/ui/Skeleton';
+import type { MessageData } from './Message';
 import styles from './ConversationList.module.css';
 
 interface ConversationListProps {
@@ -13,6 +15,7 @@ interface ConversationListProps {
 
 export function ConversationList({ activePhone }: ConversationListProps) {
   const { activeTenant } = useTenant();
+  const { socket, connected } = useSocket();
   const [conversations, setConversations] = useState<ConversationPreview[]>([]);
   const [loading, setLoading] = useState(true);
   const [query, setQuery] = useState('');
@@ -27,6 +30,7 @@ export function ConversationList({ activePhone }: ConversationListProps) {
       .catch(() => {});
   }, [activeTenant?._id]);
 
+  // Initial load (REST) on tenant change.
   useEffect(() => {
     if (!activeTenant) return;
     setLoading(true);
@@ -37,10 +41,57 @@ export function ConversationList({ activePhone }: ConversationListProps) {
       .then(({ conversations }) => setConversations(conversations))
       .catch(() => {})
       .finally(() => setLoading(false));
+  }, [activeTenant?._id]);
 
-    const interval = setInterval(fetchConversations, 5000);
+  // Socket: live updates for conversation list.
+  useEffect(() => {
+    if (!socket) return;
+
+    function onConversationUpdated(data: ConversationPreview) {
+      setConversations(prev => {
+        const idx = prev.findIndex(c => c._id === data._id);
+        if (idx === -1) {
+          // Unknown conversation — do a full refetch to get all fields.
+          fetchConversations();
+          return prev;
+        }
+        const updated = { ...prev[idx], ...data };
+        // Bump updated conversation to the top (sorted by lastMessageAt desc).
+        return [updated, ...prev.filter(c => c._id !== data._id)];
+      });
+    }
+
+    function onMessageNew(event: { conversationId: string; message: MessageData }) {
+      setConversations(prev => {
+        const idx = prev.findIndex(c => c._id === event.conversationId);
+        if (idx === -1) {
+          fetchConversations();
+          return prev;
+        }
+        const updated: ConversationPreview = {
+          ...prev[idx],
+          lastMessageAt: event.message.timestamp,
+          lastMessage: event.message.content,
+          role: event.message.direction === 'inbound' ? 'user' : 'assistant',
+        };
+        return [updated, ...prev.filter(c => c._id !== event.conversationId)];
+      });
+    }
+
+    socket.on('conversation:updated', onConversationUpdated);
+    socket.on('message:new', onMessageNew);
+    return () => {
+      socket.off('conversation:updated', onConversationUpdated);
+      socket.off('message:new', onMessageNew);
+    };
+  }, [socket, fetchConversations]);
+
+  // Fallback: slow poll when socket is disconnected.
+  useEffect(() => {
+    if (connected || !activeTenant) return;
+    const interval = setInterval(fetchConversations, 30_000);
     return () => clearInterval(interval);
-  }, [activeTenant?._id, fetchConversations]);
+  }, [connected, activeTenant?._id, fetchConversations]);
 
   const filtered = useMemo(() => {
     if (!query.trim()) return conversations;

@@ -2,6 +2,7 @@
 import { useState } from 'react';
 import { clsx } from 'clsx';
 import { TenantProvider } from '@/context/TenantContext';
+import { SocketProvider } from '@/context/SocketContext';
 import { Sidebar } from '@/components/layout/Sidebar';
 import { Topbar } from '@/components/layout/Topbar';
 import styles from './DashboardShell.module.css';
@@ -11,13 +12,15 @@ export function DashboardShell({ children }: { children: React.ReactNode }) {
 
   return (
     <TenantProvider>
-      <div className={clsx(styles.shell, collapsed && styles.collapsed)}>
-        <Sidebar collapsed={collapsed} onToggle={() => setCollapsed(c => !c)} />
-        <div className={styles.main}>
-          <Topbar />
-          <main className={styles.content}>{children}</main>
+      <SocketProvider>
+        <div className={clsx(styles.shell, collapsed && styles.collapsed)}>
+          <Sidebar collapsed={collapsed} onToggle={() => setCollapsed(c => !c)} />
+          <div className={styles.main}>
+            <Topbar />
+            <main className={styles.content}>{children}</main>
+          </div>
         </div>
-      </div>
+      </SocketProvider>
     </TenantProvider>
   );
 }

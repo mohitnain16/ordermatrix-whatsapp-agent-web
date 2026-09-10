@@ -11,6 +11,8 @@ import styles from './Message.module.css';
 export interface MessageData {
   _id?: string;
   tenantId?: string;
+  conversationId?: string;
+  whatsappMessageId?: string;
   direction: 'inbound' | 'outbound';
   type?: string;
   content: string;

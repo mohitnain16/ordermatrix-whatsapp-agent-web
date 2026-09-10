@@ -4,6 +4,7 @@ import { clsx } from 'clsx';
 import { UserCircle, ArrowDown, PaperPlaneTilt } from '@phosphor-icons/react';
 import { api } from '@/lib/api';
 import { useTenant } from '@/context/TenantContext';
+import { useSocket } from '@/context/SocketContext';
 import { formatPhone } from '@/lib/utils';
 import { CustomerAvatar } from '@/components/ui/CustomerAvatar';
 import { CustomerProfilePanel } from '@/components/customers/CustomerProfilePanel';
@@ -38,6 +39,7 @@ const NEAR_BOTTOM_PX = 150;
 
 export function MessageThread({ phone }: MessageThreadProps) {
   const { activeTenant } = useTenant();
+  const { socket, connected } = useSocket();
   const [conversationId, setConversationId] = useState<string | null>(null);
   const [customerId, setCustomerId] = useState<string | null>(null);
   const [customerName, setCustomerName] = useState<string | undefined>(undefined);
@@ -113,7 +115,7 @@ export function MessageThread({ phone }: MessageThreadProps) {
       .finally(() => setLoading(false));
   }, [phone, activeTenant?._id]);
 
-  // Poll every 5 s — only update state if data actually changed.
+  // Used by both socket path and fallback poll to merge fetched messages.
   const mergeMessages = useCallback((fetched: MessageData[]) => {
     setMessages(prev => {
       const lastFetched = fetched[fetched.length - 1];
@@ -126,17 +128,51 @@ export function MessageThread({ phone }: MessageThreadProps) {
     });
   }, []);
 
+  // Socket: listen for live message events while the connection is up.
   useEffect(() => {
-    if (!conversationId || !activeTenant) return;
+    if (!socket || !conversationId) return;
+
+    function onMessageNew(data: { conversationId: string; message: MessageData }) {
+      if (data.conversationId !== conversationId) return;
+      setMessages(prev => {
+        // Deduplicate — the server may emit for the same message we already have
+        if (data.message._id && prev.some(m => m._id === data.message._id)) return prev;
+        return [...prev, data.message];
+      });
+    }
+
+    function onMessageStatus(data: { messageId: string; conversationId: string; deliveryStatus: string }) {
+      if (data.conversationId !== conversationId) return;
+      setMessages(prev =>
+        prev.map(m =>
+          m._id === data.messageId
+            ? { ...m, deliveryStatus: data.deliveryStatus as MessageData['deliveryStatus'] }
+            : m
+        )
+      );
+    }
+
+    socket.on('message:new', onMessageNew);
+    socket.on('message:status', onMessageStatus);
+    return () => {
+      socket.off('message:new', onMessageNew);
+      socket.off('message:status', onMessageStatus);
+    };
+  }, [socket, conversationId]);
+
+  // Fallback: slow poll (30 s) when the socket is disconnected so the view
+  // doesn't go silently stale while the socket reconnects.
+  useEffect(() => {
+    if (connected || !conversationId || !activeTenant) return;
     const interval = setInterval(() => {
       api.get<{ messages: MessageData[] }>(`conversations/${conversationId}/messages`, {
         tenantId: activeTenant._id,
       })
         .then(({ messages: fetched }) => mergeMessages(fetched))
         .catch(() => {});
-    }, 5000);
+    }, 30_000);
     return () => clearInterval(interval);
-  }, [conversationId, activeTenant?._id, mergeMessages]);
+  }, [connected, conversationId, activeTenant?._id, mergeMessages]);
 
   // Reset UI state when conversation switches.
   useEffect(() => {
