@@ -157,8 +157,8 @@
 }
 
 .card:hover {
-  box-shadow: var(--shadow);
-  border-color: var(--line-2, var(--ink-4));
+  box-shadow: var(--shadow-md);
+  border-color: rgba(34, 197, 94, 0.2);
 }
 
 .cardInactive {
@@ -413,15 +413,17 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: rgba(8, 8, 10, 0.48);
-  backdrop-filter: blur(4px);
-  -webkit-backdrop-filter: blur(4px);
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
   padding: 24px;
 }
 
 .modal {
-  background: var(--surface);
-  border: 1px solid var(--line);
+  background: var(--glass-bg);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border: 1px solid var(--glass-border);
   border-radius: var(--radius-xl);
   padding: 24px;
   width: 100%;
@@ -431,7 +433,7 @@
   display: flex;
   flex-direction: column;
   gap: 16px;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.14);
+  box-shadow: var(--shadow-xl);
 }
 
 .modalTitle {
