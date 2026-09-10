@@ -442,3 +442,25 @@
   font-size: 12.5px;
   color: var(--red);
 }
+
+/* ─── Responsive ─────────────────────────────────────────────────────────────  */
+@media (max-width: 639px) {
+  /* Full-screen sheet instead of narrow side panel */
+  .panel {
+    width: 100%;
+    border-left: none;
+    box-shadow: 0 -8px 40px rgba(20, 19, 15, 0.12);
+  }
+
+  /* Slides up from bottom on mobile */
+  .panel {
+    top: auto;
+    height: 92dvh;
+    border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+    transform: translateY(100%);
+  }
+
+  .panelVisible {
+    transform: translateY(0);
+  }
+}
