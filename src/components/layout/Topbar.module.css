@@ -6,11 +6,15 @@
   justify-content: space-between;
   height: var(--topbar-height);
   padding: 0 20px;
-  background: var(--surface);
-  border-bottom: 1px solid var(--line);
+  background: var(--glass-bg);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border-bottom: 1px solid var(--glass-border);
   position: sticky;
   top: 0;
   z-index: 10;
+  /* Box shadow for depth separation */
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.04), var(--shadow-sm);
 }
 
 .left {
@@ -20,10 +24,11 @@
 }
 
 .title {
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 600;
   color: var(--ink);
-  letter-spacing: -0.01em;
+  letter-spacing: 0.01em;
+  font-family: var(--font-heading);
 }
 
 .right {
@@ -41,12 +46,13 @@
   border-radius: var(--radius);
   color: var(--ink-4);
   background: none;
-  border: none;
+  border: 1px solid transparent;
   cursor: pointer;
-  transition: background 150ms ease, color 150ms ease;
+  transition: background 150ms ease, color 150ms ease, border-color 150ms ease;
 }
 
 .logout:hover {
-  background: var(--surface-3);
+  background: rgba(239, 68, 68, 0.12);
+  border-color: rgba(239, 68, 68, 0.2);
   color: var(--red);
 }
