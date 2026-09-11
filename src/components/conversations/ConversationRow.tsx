@@ -31,6 +31,7 @@ export function ConversationRow({ conversation, active }: ConversationRowProps) 
     <Link
       href={`/conversations/${encodeURIComponent(customerPhone)}`}
       className={clsx(styles.row, active && styles.active, hasUnread && styles.unread)}
+      onClick={() => console.log('[DEBUG nav] conversation clicked', { phone: customerPhone, conversationId: conversation._id, unreadCount })}
     >
       <CustomerAvatar phone={customerPhone} name={customerName} size={36} />
       <div className={styles.body}>

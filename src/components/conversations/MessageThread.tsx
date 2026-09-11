@@ -103,19 +103,61 @@ export function MessageThread({ phone }: MessageThreadProps) {
       .then(({ conversations }) => {
         const conv = conversations[0];
         if (!conv) throw new Error('Conversation not found');
-        setConversationId(conv._id);
+        console.log('[DEBUG thread] conversations REST returned', {
+          phone,
+          returnedCount: conversations.length,
+          conv0Id: conv._id,
+          conv0Phone: conv.customerPhone,
+          phoneMatch: conv.customerPhone === phone,
+        });
+        // Stash metadata for after message load — don't set conversationId yet.
+        // Setting it early would arm the socket listener before REST messages land,
+        // creating a window where a socket message could be overwritten by setMessages.
         if (conv.customerId) setCustomerId(conv.customerId);
         if (conv.customerName) setCustomerName(conv.customerName);
-        // Mark as read immediately — resets unread badge and notifies other clients.
         api.post(`conversations/${conv._id}/read`, {}).catch(() => {});
-        return api.get<{ messages: MessageData[] }>(`conversations/${conv._id}/messages`, {
-          tenantId: activeTenant._id,
-        });
+        console.log('[DEBUG thread] fetching messages', { convId: conv._id });
+        return api
+          .get<{ messages: MessageData[] }>(`conversations/${conv._id}/messages`, {
+            tenantId: activeTenant._id,
+          })
+          .then(({ messages }) => {
+            console.log('[DEBUG thread] messages REST response', {
+              convId: conv._id,
+              count: messages.length,
+              firstId: messages[0]?._id,
+              firstTs: messages[0]?.timestamp,
+              lastId: messages[messages.length - 1]?._id,
+              lastTs: messages[messages.length - 1]?.timestamp,
+            });
+            return { messages, convId: conv._id };
+          });
       })
-      .then(({ messages }) => setMessages(messages))
-      .catch(e => setError(e.message))
-      .finally(() => setLoading(false));
+      .then(({ messages, convId }) => {
+        // Batch all three updates so they land in a single render with loading=false.
+        // If setLoading(false) were in .finally() it would be a separate microtask,
+        // causing the scroll useEffect to fire while the skeleton is still in the DOM
+        // (loading=true), which sets scrollTop to the skeleton's height (~300px) rather
+        // than the bottom of the actual message list.
+        setMessages(messages);
+        setConversationId(convId);
+        setLoading(false);
+      })
+      .catch(e => {
+        setError(e.message);
+        setLoading(false);
+      });
   }, [phone, activeTenant?._id]);
+
+  // DEBUG — log state after every messages/conversationId change
+  useEffect(() => {
+    console.log('[DEBUG render] messages state updated', {
+      conversationId,
+      messagesLength: messages.length,
+      firstId: messages[0]?._id,
+      lastId: messages[messages.length - 1]?._id,
+    });
+  }, [messages, conversationId]);
 
   // Used by both socket path and fallback poll to merge fetched messages.
   const mergeMessages = useCallback((fetched: MessageData[]) => {
@@ -135,6 +177,13 @@ export function MessageThread({ phone }: MessageThreadProps) {
     if (!socket || !conversationId) return;
 
     function onMessageNew(data: { conversationId: string; message: MessageData }) {
+      console.log('[DEBUG socket] message:new received in thread', {
+        eventConvId: data.conversationId,
+        localConvId: conversationId,
+        match: data.conversationId === conversationId,
+        messageId: data.message._id,
+        direction: data.message.direction,
+      });
       if (data.conversationId !== conversationId) return;
       setMessages(prev => {
         // Deduplicate — the server may emit for the same message we already have
