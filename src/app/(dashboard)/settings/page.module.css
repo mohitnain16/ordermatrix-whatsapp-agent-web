@@ -340,6 +340,58 @@
   flex-shrink: 0;
 }
 
+/* ─── Appearance — 3-way theme segmented control ─────────────────────────── */
+.themeSegment {
+  display: inline-flex;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.themeOption {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 6px 14px;
+  font-size: 12.5px;
+  font-weight: 500;
+  color: var(--ink-4);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  transition: background 120ms ease, color 120ms ease;
+  font-family: var(--font-sans);
+  white-space: nowrap;
+  line-height: 1;
+}
+
+.themeOption + .themeOption {
+  border-left: 1px solid var(--line);
+}
+
+.themeOption:hover:not(.themeOptionActive) {
+  background: var(--surface-2);
+  color: var(--ink-2);
+}
+
+.themeOptionActive {
+  background: var(--primary-soft);
+  color: var(--primary);
+}
+
+@media (max-width: 639px) {
+  .themeSegment {
+    width: 100%;
+  }
+
+  .themeOption {
+    flex: 1;
+    justify-content: center;
+    padding: 10px 8px;
+  }
+}
+
 /* ─── Save area ──────────────────────────────────────────────────────────── */
 .saveRow {
   display: flex;

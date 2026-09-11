@@ -1,29 +1,39 @@
 'use client';
 import { useCallback, useEffect, useState } from 'react';
 
-type Mode = 'light' | 'dark';
+export type Mode = 'light' | 'dark';
+export type ThemePreference = 'light' | 'dark' | 'system';
+
 const KEY = 'om-theme';
 
 function getSystemMode(): Mode {
   return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
 }
 
+function readStoredPreference(): ThemePreference {
+  try {
+    const v = localStorage.getItem(KEY);
+    if (v === 'light' || v === 'dark') return v;
+  } catch (_) {}
+  return 'system';
+}
+
 export function useTheme() {
-  // Start with whatever the inline script already set — avoids a wrong-icon flash.
-  // Initialise to 'light' on the server (no DOM), sync immediately on mount.
   const [mode, setMode] = useState<Mode>('light');
+  const [preference, setPreferenceState] = useState<ThemePreference>('system');
 
   useEffect(() => {
-    // Sync with whatever the blocking inline script put on <html>
+    // Sync both states from what the blocking inline script already set on <html>
+    const stored = readStoredPreference();
+    setPreferenceState(stored);
     const attr = document.documentElement.getAttribute('data-mode') as Mode | null;
     if (attr === 'dark' || attr === 'light') setMode(attr);
 
-    // Follow OS preference changes live — only when the user has no stored choice
+    // Live OS-preference tracking — only fires when no explicit stored value
     const mq = window.matchMedia('(prefers-color-scheme: dark)');
     function onSystemChange(e: MediaQueryListEvent) {
       if (!localStorage.getItem(KEY)) {
-        // data-mode is already updated by the inline script's own listener;
-        // we only need to sync React state here.
+        // data-mode is already updated by the inline script's own listener
         setMode(e.matches ? 'dark' : 'light');
       }
     }
@@ -31,25 +41,31 @@ export function useTheme() {
     return () => mq.removeEventListener('change', onSystemChange);
   }, []);
 
+  // 3-way setter used by the Settings segmented control
+  const setPreference = useCallback((pref: ThemePreference) => {
+    setPreferenceState(pref);
+    if (pref === 'system') {
+      try { localStorage.removeItem(KEY); } catch (_) {}
+      const system = getSystemMode();
+      setMode(system);
+      document.documentElement.setAttribute('data-mode', system);
+    } else {
+      setMode(pref);
+      document.documentElement.setAttribute('data-mode', pref);
+      try { localStorage.setItem(KEY, pref); } catch (_) {}
+    }
+  }, []);
+
+  // Simple 2-state toggle for the topbar icon — always writes an explicit value
   const toggle = useCallback(() => {
-    // If currently following system, resolve what system currently is
-    // so the toggle flips relative to what the user actually sees.
     const current: Mode =
-      (document.documentElement.getAttribute('data-mode') as Mode | null) ??
-      getSystemMode();
+      (document.documentElement.getAttribute('data-mode') as Mode | null) ?? getSystemMode();
     const next: Mode = current === 'dark' ? 'light' : 'dark';
     setMode(next);
+    setPreferenceState(next);
     document.documentElement.setAttribute('data-mode', next);
     try { localStorage.setItem(KEY, next); } catch (_) {}
   }, []);
 
-  // Expose a way to clear the stored preference and go back to following the OS.
-  const resetToSystem = useCallback(() => {
-    try { localStorage.removeItem(KEY); } catch (_) {}
-    const system = getSystemMode();
-    setMode(system);
-    document.documentElement.setAttribute('data-mode', system);
-  }, []);
-
-  return { mode, toggle, resetToSystem };
+  return { mode, preference, toggle, setPreference };
 }

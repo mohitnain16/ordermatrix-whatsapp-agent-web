@@ -1,9 +1,10 @@
 'use client';
 import { useCallback, useEffect, useState } from 'react';
-import { Plus, X, Bell, BellSlash, SpeakerHigh, SpeakerSlash } from '@phosphor-icons/react';
+import { Plus, X, Bell, BellSlash, SpeakerHigh, SpeakerSlash, Sun, Moon, Monitor } from '@phosphor-icons/react';
 import { clsx } from 'clsx';
 import { useTenant } from '@/context/TenantContext';
 import { useNotification } from '@/context/NotificationContext';
+import { useTheme, type ThemePreference } from '@/hooks/useTheme';
 import { api } from '@/lib/api';
 import { Button } from '@/components/ui/Button';
 import styles from './page.module.css';
@@ -45,6 +46,7 @@ const PERMISSION_LABELS: Record<string, string> = {
 export default function SettingsPage() {
   const { activeTenant, loading: tenantLoading } = useTenant();
   const { soundEnabled, setSoundEnabled, permission, requestPermission } = useNotification();
+  const { preference, setPreference } = useTheme();
   const [detail, setDetail] = useState<TenantDetail | null>(null);
   const [loading, setLoading] = useState(true);
   const [fetchError, setFetchError] = useState('');
@@ -347,6 +349,43 @@ export default function SettingsPage() {
                   <Plus size={12} style={{ marginRight: 4, verticalAlign: 'middle' }} />
                   Add rule
                 </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* ── Appearance ────────────────────────────────────────────────── */}
+        <div className={styles.section}>
+          <div className={styles.sectionHeader}>
+            <span className={styles.sectionTitle}>Appearance</span>
+          </div>
+          <div className={styles.sectionBody}>
+            <div className={styles.notifRow}>
+              <div>
+                <div className={styles.notifLabel}>Colour scheme</div>
+                <div className={styles.notifSub}>
+                  Choose light or dark, or follow your operating system&apos;s setting.
+                </div>
+              </div>
+              <div className={styles.themeSegment} role="group" aria-label="Colour scheme">
+                {(
+                  [
+                    { value: 'light',  label: 'Light',  icon: <Sun  size={14} /> },
+                    { value: 'dark',   label: 'Dark',   icon: <Moon size={14} /> },
+                    { value: 'system', label: 'System', icon: <Monitor size={14} /> },
+                  ] as Array<{ value: ThemePreference; label: string; icon: ReturnType<typeof Sun> }>
+                ).map(({ value, label, icon }) => (
+                  <button
+                    key={value}
+                    type="button"
+                    className={`${styles.themeOption}${preference === value ? ` ${styles.themeOptionActive}` : ''}`}
+                    onClick={() => setPreference(value)}
+                    aria-pressed={preference === value}
+                  >
+                    {icon}
+                    <span>{label}</span>
+                  </button>
+                ))}
               </div>
             </div>
           </div>
