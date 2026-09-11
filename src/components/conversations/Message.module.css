@@ -38,7 +38,7 @@
   max-width: 70%;
   padding: 9px 13px 8px;
   background: var(--primary-soft);
-  border: 0.5px solid rgba(37, 99, 235, 0.18);
+  border: 0.5px solid var(--primary-ring);
   border-radius: var(--radius-md) var(--radius-md) var(--radius-sm) var(--radius-md);
 }
 

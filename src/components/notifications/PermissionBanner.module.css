@@ -47,7 +47,7 @@
 }
 
 .enableBtn:hover {
-  background: #DBEAFE;
+  background: var(--primary-soft);
 }
 
 .closeBtn {

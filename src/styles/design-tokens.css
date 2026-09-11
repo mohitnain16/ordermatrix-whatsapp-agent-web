@@ -1,0 +1,90 @@
+/*
+ * Ordermatrix Shared Design Tokens
+ * Warm Pampas / Crail palette — light + dark
+ * Source of truth for all Ordermatrix products.
+ * Import this file first, then alias legacy tokens on top.
+ */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Geist+Mono:wght@400;500&display=swap');
+
+:root {
+  /* ── Typography ────────────────────────────────────────────────────────── */
+  --font-sans:    'Inter', 'Helvetica Neue', system-ui, sans-serif;
+  --font-heading: 'Fraunces', 'Source Serif 4', Georgia, serif;
+  --font-mono:    'Geist Mono', 'SF Mono', monospace;
+
+  /* ── Canonical surfaces ────────────────────────────────────────────────── */
+  --surface-0: #F4F3EE;   /* Pampas — page canvas */
+  --surface-1: #FFFFFF;   /* cards, panels */
+  --surface-2: #F4F3EE;   /* input backgrounds, hover tint */
+  --surface-3: #EAE8E0;   /* disabled, skeleton, dimmed areas */
+
+  /* ── Canonical text ────────────────────────────────────────────────────── */
+  --text-primary:   #2A2724;
+  --text-secondary: #6B655D;
+  --text-muted:     #B1ADA1;
+
+  /* ── Canonical borders ─────────────────────────────────────────────────── */
+  --border:        rgba(42, 39, 36, 0.10);
+  --border-strong: rgba(42, 39, 36, 0.18);
+
+  /* ── Canonical accent (Crail terracotta) ───────────────────────────────── */
+  --accent:        #C15F3C;
+  --accent-hover:  #A84E2F;
+  --bg-accent:     #F3E3DA;
+  --text-accent:   #C15F3C;
+
+  /* ── Focus ring ────────────────────────────────────────────────────────── */
+  --primary-ring:  rgba(193, 95, 60, 0.14);
+  --primary-glow:  rgba(193, 95, 60, 0.32);
+}
+
+/* ── Dark mode — explicit toggle wins ──────────────────────────────────────
+   Two rules: one for the explicit attribute, one for the OS preference.
+   The explicit attribute always wins because it's set before paint.          */
+[data-mode="dark"] {
+  --surface-0: #1F1D1B;
+  --surface-1: #292623;
+  --surface-2: #322F2B;
+  --surface-3: #3A3530;
+
+  --text-primary:   #F4F3EE;
+  --text-secondary: #B1ADA1;
+  --text-muted:     #7A756C;
+
+  --border:        rgba(244, 243, 238, 0.10);
+  --border-strong: rgba(244, 243, 238, 0.18);
+
+  --accent:        #D97A56;
+  --accent-hover:  #E68B67;
+  --bg-accent:     #3D2A20;
+  --text-accent:   #E68B67;
+
+  --primary-ring:  rgba(217, 122, 86, 0.20);
+  --primary-glow:  rgba(217, 122, 86, 0.38);
+}
+
+/* OS-level dark preference — only applies when no explicit data-mode is set */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-mode="light"]):not([data-mode="dark"]) {
+    --surface-0: #1F1D1B;
+    --surface-1: #292623;
+    --surface-2: #322F2B;
+    --surface-3: #3A3530;
+
+    --text-primary:   #F4F3EE;
+    --text-secondary: #B1ADA1;
+    --text-muted:     #7A756C;
+
+    --border:        rgba(244, 243, 238, 0.10);
+    --border-strong: rgba(244, 243, 238, 0.18);
+
+    --accent:        #D97A56;
+    --accent-hover:  #E68B67;
+    --bg-accent:     #3D2A20;
+    --text-accent:   #E68B67;
+
+    --primary-ring:  rgba(217, 122, 86, 0.20);
+    --primary-glow:  rgba(217, 122, 86, 0.38);
+  }
+}

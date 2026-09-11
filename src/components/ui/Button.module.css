@@ -62,7 +62,7 @@
 }
 
 .danger:hover:not(:disabled) {
-  background: #fad5d2;
+  background: var(--red-soft);
 }
 
 /* Loading spinner */

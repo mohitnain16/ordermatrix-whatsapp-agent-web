@@ -2,6 +2,7 @@
 import { useRouter } from 'next/navigation';
 import { SignOut } from '@phosphor-icons/react';
 import { TenantSwitcher } from './TenantSwitcher';
+import { ThemeToggle } from '@/components/ui/ThemeToggle';
 import { useSocket } from '@/context/SocketContext';
 import styles from './Topbar.module.css';
 
@@ -35,6 +36,7 @@ export function Topbar({ title }: TopbarProps) {
             Reconnecting
           </span>
         )}
+        <ThemeToggle />
         <TenantSwitcher />
         <button className={styles.logout} onClick={handleLogout} title="Sign out">
           <SignOut size={16} />
