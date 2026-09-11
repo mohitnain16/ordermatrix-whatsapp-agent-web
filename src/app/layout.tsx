@@ -6,8 +6,19 @@ export const metadata: Metadata = {
   description: 'Admin dashboard for the Ordermatrix WhatsApp AI agent',
 };
 
-// Runs before paint to prevent flash of wrong theme
-const themeScript = `(function(){try{var m=localStorage.getItem('om-theme');if(!m)m=window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';document.documentElement.setAttribute('data-mode',m);}catch(e){}})();`;
+// Runs synchronously before paint — sets data-mode and registers a live
+// OS-preference listener so changing system theme while the tab is open works.
+const themeScript = `(function(){
+  try{
+    var KEY='om-theme';
+    function apply(m){document.documentElement.setAttribute('data-mode',m);}
+    var stored=localStorage.getItem(KEY);
+    apply(stored||(window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light'));
+    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change',function(e){
+      if(!localStorage.getItem(KEY))apply(e.matches?'dark':'light');
+    });
+  }catch(e){}
+})();`;
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
